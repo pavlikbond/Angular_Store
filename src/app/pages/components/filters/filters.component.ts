@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { StoreService } from "src/app/services/store.service";
 
 @Component({
   selector: "app-filters",
@@ -6,10 +7,14 @@ import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 })
 export class FiltersComponent implements OnInit {
   @Output() showCategory: EventEmitter<string> = new EventEmitter<string>();
-  categories = ["shoes", "sports"];
-  constructor() {}
+  categories: string[] | undefined;
+  constructor(private storeService: StoreService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.storeService.getAllCategories().subscribe((categories) => {
+      this.categories = categories;
+    });
+  }
 
   onShowCategory(category: string) {
     this.showCategory.emit(category);
