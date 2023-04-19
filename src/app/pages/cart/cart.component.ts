@@ -2,7 +2,6 @@ import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { loadStripe } from "@stripe/stripe-js";
 import { Cart, CartItem } from "src/app/models/cart.model";
-import { Product } from "src/app/models/product.model";
 import { CartService } from "src/app/services/cart.service";
 
 @Component({
@@ -41,11 +40,6 @@ export class CartComponent implements OnInit {
       this.cart = cart;
       this.dataSource = cart.items;
     });
-    //check local storage for cart items
-    const cartItems = JSON.parse(localStorage.getItem("cart") || "[]");
-    if (cartItems.length) {
-      this.cartService.cart.next({ items: cartItems });
-    }
   }
 
   getTotal(items: CartItem[]) {
@@ -70,7 +64,6 @@ export class CartComponent implements OnInit {
 
   onCheckout(): void {
     //save cart items to local storage
-    localStorage.setItem("cart", JSON.stringify(this.cart.items));
     this.loading = true;
     this.http
       .post("http://localhost:4242/checkout", {

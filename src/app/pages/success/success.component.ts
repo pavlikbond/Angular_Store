@@ -11,9 +11,12 @@ export class SuccessComponent implements OnInit {
 
   ngOnInit(): void {
     //check local storage for cart and delete it if found
-    const cartItems = JSON.parse(localStorage.getItem("cart") || "[]");
-    if (cartItems.length) {
-      localStorage.removeItem("cart");
-    }
+    // const cart = localStorage.getItem("cart");
+    // console.log(cart);
+
+    // if (cart) {
+    //   localStorage.removeItem("cart");
+    // }
+    this.cartService.clearCart(false);
   }
 }

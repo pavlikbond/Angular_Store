@@ -6,20 +6,17 @@ import { CartService } from "src/app/services/cart.service";
   selector: "app-header",
   templateUrl: "./header.component.html",
 })
-export class HeaderComponent {
-  private _cart: Cart = { items: [] };
+export class HeaderComponent implements OnInit {
+  cart: Cart = { items: [] };
   itemsQuantity = 0;
 
-  @Input()
-  get cart(): Cart {
-    return this._cart;
-  }
-  set cart(cart: Cart) {
-    this._cart = cart;
-    this.itemsQuantity = cart.items.reduce((acc, item) => acc + item.quantity, 0);
-  }
-
   constructor(private cartService: CartService) {}
+  ngOnInit(): void {
+    this.cartService.cart.subscribe((cart) => {
+      this.cart = cart;
+      this.itemsQuantity = cart.items.reduce((acc, item) => acc + item.quantity, 0);
+    });
+  }
 
   getTotal(items: CartItem[]): number {
     return this.cartService.getTotal(items);

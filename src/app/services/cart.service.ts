@@ -7,8 +7,22 @@ import { Cart, CartItem } from "../models/cart.model";
   providedIn: "root",
 })
 export class CartService {
-  cart = new BehaviorSubject<Cart>({ items: [] });
-  constructor(private _snackBar: MatSnackBar) {}
+  cart = new BehaviorSubject<Cart>(this.checkLocalStorage());
+  constructor(private _snackBar: MatSnackBar) {
+    this.cart.subscribe((cart) => {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    });
+  }
+
+  checkLocalStorage(): Cart {
+    const cart = localStorage.getItem("cart");
+    if (cart) {
+      return JSON.parse(cart);
+    } else {
+      return { items: [] };
+    }
+  }
+
   addToCart(item: CartItem): void {
     const items = [...this.cart.value.items];
 
@@ -27,9 +41,11 @@ export class CartService {
     return items.reduce((acc, item) => acc + item.price * item.quantity, 0);
   }
 
-  clearCart(): void {
+  clearCart(snack = true): void {
     this.cart.next({ items: [] });
-    this._snackBar.open("Cart cleared", "Ok", { duration: 3000 });
+    if (snack) {
+      this._snackBar.open("Cart cleared", "Ok", { duration: 3000 });
+    }
   }
 
   removeFromCart(item: CartItem): void {
@@ -49,5 +65,9 @@ export class CartService {
         this.removeFromCart(_item);
       }
     }
+  }
+
+  loadCart(items: CartItem[]): void {
+    this.cart.next({ items });
   }
 }
