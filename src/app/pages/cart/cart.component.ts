@@ -11,6 +11,7 @@ import { CartService } from "src/app/services/cart.service";
   styles: [],
 })
 export class CartComponent implements OnInit {
+  loading: boolean = false;
   cart: Cart = {
     items: [
       {
@@ -40,6 +41,11 @@ export class CartComponent implements OnInit {
       this.cart = cart;
       this.dataSource = cart.items;
     });
+    //check local storage for cart items
+    const cartItems = JSON.parse(localStorage.getItem("cart") || "[]");
+    if (cartItems.length) {
+      this.cartService.cart.next({ items: cartItems });
+    }
   }
 
   getTotal(items: CartItem[]) {
@@ -63,6 +69,9 @@ export class CartComponent implements OnInit {
   }
 
   onCheckout(): void {
+    //save cart items to local storage
+    localStorage.setItem("cart", JSON.stringify(this.cart.items));
+    this.loading = true;
     this.http
       .post("http://localhost:4242/checkout", {
         items: this.cart.items,
@@ -72,6 +81,7 @@ export class CartComponent implements OnInit {
           "pk_test_51MyLzpKPzg6RNBLXmh7cJnodgFMYbNoPZ2SPA2BochTwrUoVxj7m4yGkrcmR2obz8qwQIS8LhqZBn5e5VH9acbzA00a3Sf7l4W"
         );
         stripe?.redirectToCheckout({ sessionId: res.id });
+        this.loading = false;
       });
   }
 }

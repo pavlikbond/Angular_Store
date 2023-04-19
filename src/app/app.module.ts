@@ -26,6 +26,9 @@ import { CartComponent } from "./pages/cart/cart.component";
 import { CartService } from "./services/cart.service";
 import { StoreService } from "./services/store.service";
 import { HttpClientModule } from "@angular/common/http";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { SuccessComponent } from './pages/success/success.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,6 +38,7 @@ import { HttpClientModule } from "@angular/common/http";
     FiltersComponent,
     ProductBoxComponent,
     CartComponent,
+    SuccessComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,6 +57,7 @@ import { HttpClientModule } from "@angular/common/http";
     MatBadgeModule,
     MatSnackBarModule,
     HttpClientModule,
+    MatProgressSpinnerModule,
   ],
   providers: [CartService, StoreService],
   bootstrap: [AppComponent],

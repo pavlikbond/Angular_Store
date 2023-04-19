@@ -51,7 +51,10 @@
         </button>
       </td>
       <td mat-footer-cell *matFooterCellDef>
-        <button mat-raised-button class="float-right bg-teal-300" (click)="onCheckout()">Checkout</button>
+        <button *ngIf="!loading" mat-raised-button class="float-right bg-teal-300" (click)="onCheckout()">
+          Checkout
+        </button>
+        <mat-spinner diameter="30" *ngIf="loading" class="float-right"></mat-spinner>
       </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
