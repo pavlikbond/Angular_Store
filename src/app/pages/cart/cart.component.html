@@ -61,6 +61,10 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
   </table>
+  <div *ngIf="error" class="rounded shadow border-l-8 border-red-500 mt-8 px-2 py-4 flex items-center gap-6 bg-red-50">
+    <mat-icon class="text-red-500 scale-[1.5] ml-4">error</mat-icon>
+    <span class="text-red-500 truncate text-lg">{{ error }}</span>
+  </div>
 </mat-card>
 <mat-card *ngIf="!cart.items.length" class="max-w-7xl mx-auto">
   <p>Your cart is empty</p>

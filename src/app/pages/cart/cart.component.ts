@@ -11,25 +11,8 @@ import { CartService } from "src/app/services/cart.service";
 })
 export class CartComponent implements OnInit {
   loading: boolean = false;
-  cart: Cart = {
-    items: [
-      {
-        product: "https://via.placeholder.com/200",
-        name: "sneakers",
-        price: 150,
-        quantity: 2,
-        id: 1,
-      },
-      {
-        product: "https://via.placeholder.com/200",
-        name: "snakes",
-        price: 150,
-        quantity: 3,
-        id: 2,
-      },
-    ],
-  };
-
+  cart: Cart = { items: [] };
+  error: string = "";
   dataSource: CartItem[] = [];
   displayedColumns: string[] = ["product", "name", "price", "quantity", "total", "action"];
   constructor(private cartService: CartService, private http: HttpClient) {}
@@ -63,18 +46,29 @@ export class CartComponent implements OnInit {
   }
 
   onCheckout(): void {
+    this.error = "";
     //save cart items to local storage
     this.loading = true;
     this.http
       .post("http://localhost:4242/checkout", {
         items: this.cart.items,
       })
-      .subscribe(async (res: any) => {
-        let stripe = await loadStripe(
-          "pk_test_51MyLzpKPzg6RNBLXmh7cJnodgFMYbNoPZ2SPA2BochTwrUoVxj7m4yGkrcmR2obz8qwQIS8LhqZBn5e5VH9acbzA00a3Sf7l4W"
-        );
-        stripe?.redirectToCheckout({ sessionId: res.id });
-        this.loading = false;
-      });
+      .subscribe(
+        async (res: any) => {
+          let stripe = await loadStripe(
+            "pk_test_51MyLzpKPzg6RNBLXmh7cJnodgFMYbNoPZ2SPA2BochTwrUoVxj7m4yGkrcmR2obz8qwQIS8LhqZBn5e5VH9acbzA00a3Sf7l4W"
+          );
+          stripe?.redirectToCheckout({ sessionId: res.id });
+          this.loading = false;
+        },
+        (err) => {
+          //check for status code 400
+          if (err.status === 400) {
+            this.error = err.error.message;
+          }
+          this.loading = false;
+          console.log(err);
+        }
+      );
   }
 }
